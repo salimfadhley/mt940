@@ -1,4 +1,4 @@
-from mt940.parser import parse
+from mt940.parser import parse, tokenize
 import unittest
 
 
@@ -9,8 +9,13 @@ class TestMT940Parser(unittest.TestCase):
         expected = {}
         self.assertEqual(expected, parse(message))
 
-    def test_single_key(self):
-        message = "{1:F01HBOSXXXXAXXX9999999999}"
-        expected = {1:"F01HBOSXXXXAXXX9999999999"}
-        self.assertEqual(expected, parse(message))
+    def test_tokenize_28c(self):
+        message = "{:28C:00065/001}"
+        result = tokenize(message)
+        print(result)
 
+    # def test_single_key(self):
+    #     message = ":28C:00065/001"
+    #     expected = ('Statement Number/Sequence Number',(65,1))
+    #     self.assertEqual(expected, parse(message))
+    #
