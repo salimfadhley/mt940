@@ -13,6 +13,10 @@ class TestMT940Parser(unittest.TestCase):
         message = "{:28C:00065/001}"
         tokenize(message)
 
+    def test_tokenize_61(self):
+        message = "{:61:1404010401C1,NCHGNONREF\nREFUNDED CHARGES         REF : 493}"
+        tokenize(message)
+
     def test_single_key(self):
         message = "{:28C:00065/001}"
         expected = {'Statement Number/Sequence Number':(65,1)}
