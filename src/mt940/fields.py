@@ -19,10 +19,10 @@ Example:
 import re
 
 FIELDS = {
-    61:'6!n4!n2a1!a15dN3!a16x//16x34x'
+    "61": '6!n4!n2a1!a15dN3!a16x//16x34x'
 }
 
-FIELD_DEF = "((\d+)*)?(\d)(!)?([nacxd])"
+FIELD_DEF = "(/*)((\d+)*)?(\d)(!)?([nacxd])"
 
 TEXT_CLASSES = {
     'n':r'\d',
@@ -35,15 +35,21 @@ TEXT_CLASSES = {
 def get_regex_parts_from_spec(spec):
     parts = re.findall(FIELD_DEF, spec)
     for part in parts:
+        slashes = part[0]
+        length = int(part[3])
+        min_length = length if part[4] == '!' else 0
+        text_class = TEXT_CLASSES[part[5]]
 
-        length = int(part[2])
-        min_length = length if part[3] == '!' else 0
-        text_class = TEXT_CLASSES[part[4]]
-
-        yield "(%s{%i,%i})" % (text_class, min_length, length)
+        yield "%s(%s{%i,%i})" % (re.escape(slashes), text_class, min_length, length)
 
 def get_regex_from_spec(spec):
     return "".join(get_regex_parts_from_spec(spec))
+
+
+def get_field_regex(field_code):
+    spec = FIELDS[field_code]
+    return get_regex_from_spec(spec)
+
 
 
 if __name__ == '__main__':

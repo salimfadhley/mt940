@@ -1,5 +1,6 @@
-from mt940.parser import parse, tokenize
 import unittest
+
+from mt940.parser import parse, tokenize
 
 
 class TestMT940Parser(unittest.TestCase):
@@ -14,7 +15,7 @@ class TestMT940Parser(unittest.TestCase):
         tokenize(message)
 
     def test_tokenize_61(self):
-        message = "{:61:1404010401C1,NCHGNONREF\nREFUNDED CHARGES         REF : 493}"
+        message = "{:61:0501120112DN449,77\nNTRF\nREFKLI1234567890//BR05012139000001944-PRZEL.KRAJ.WYCH.MT.ELX}"
         tokenize(message)
 
     def test_single_key(self):
