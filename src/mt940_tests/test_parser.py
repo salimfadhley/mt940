@@ -1,35 +1,39 @@
 import unittest
 
 from mt940.parser import parse, tokenize
+import pkg_resources
 
 
 class TestMT940Parser(unittest.TestCase):
 
-    def test_basic(self):
-        message = "{}"
-        expected = {}
+    def test_header_block_one(self):
+        message = "{1:F01HBOSXXXXAXXX9999999999}"
+        expected = {1:'F01HBOSXXXXAXXX9999999999'}
         self.assertEqual(expected, parse(message))
 
-    def test_tokenize_28c(self):
-        message = "{:28C:00065/001}"
-        tokenize(message)
-
-    def test_tokenize_61(self):
-        message = "{:61:0501120112DN449,77\nNTRF\nREFKLI1234567890//BR05012139000001944-PRZEL.KRAJ.WYCH.MT.ELX}"
-        tokenize(message)
-
-    def test_single_key(self):
-        message = "{:28C:00065/001}"
-        expected = {'Statement Number/Sequence Number':(65,1)}
+    def test_header_block_one_and_two(self):
+        message = "{1:F01HBOSXXXXAXXX9999999999}{2:I940HBOSXXXXXXXXN}"
+        expected = {1:'F01HBOSXXXXAXXX9999999999', 2:'I940HBOSXXXXXXXXN'}
         self.assertEqual(expected, parse(message))
 
-    def test_reference_number(self):
-        message = "{:20:2267602902375194}"
-        expected = {"Reference Number":2267602902375194}
+    def test_header_block_one_and_two_and_four(self):
+        message = "{1:F01HBOSXXXXAXXX9999999999}{2:I940HBOSXXXXXXXXN}{4:\n-}"
+        expected = {1:'F01HBOSXXXXAXXX9999999999', 2:'I940HBOSXXXXXXXXN', 4:{}}
         self.assertEqual(expected, parse(message))
 
-    def test_multiple_keys(self):
-        message = "{:20:2267602902375194\n:28C:00065/001}"
-        expected = {"Reference Number":2267602902375194, 'Statement Number/Sequence Number':(65,1)}
+    def test_header_block_one_and_two_and_four_with_content(self):
+        message = "{1:F01HBOSXXXXAXXX9999999999}{2:I940HBOSXXXXXXXXN}{4:\n:61:FOO\n-}"
+        expected = {1:'F01HBOSXXXXAXXX9999999999', 2:'I940HBOSXXXXXXXXN', 4:{"61":"FOO"}}
         self.assertEqual(expected, parse(message))
+
+    # def test_header_block_one_and_two_and_four_with_tricky_content(self):
+    #     message = "{1:F01HBOSXXXXAXXX9999999999}{2:I940HBOSXXXXXXXXN}{4:\n:FOO:BLAH\n:FOD:AB CD\n-}"
+    #     expected = {1:'F01HBOSXXXXAXXX9999999999', 2:'I940HBOSXXXXXXXXN', 4:{"FOO":"BLAH", "FOD":"12 34"}}
+    #     self.assertEqual(expected, parse(message))
+
+    # def test_sample_data(self):
+    #     message = pkg_resources.resource_string('mt940_tests', 'sample_file.txt')
+    #     parsed = parse(message)
+    #     print(parsed)
+
 

@@ -3,28 +3,23 @@ from ply import lex, yacc
 class ParserError(RuntimeError): pass
 
 tokens = (
-
-    "OPEN_BRACKET",
-    "CLOSE_BRACKET",
     "NUMERIC",
     "ALPHANUMERIC",
-    "SLASH",
-
-    "STATEMENT_NO_SEQ_NO_TAG",
-    "REFERENCE_NO_TAG",
+    "NEWLINE",
+    "FIELD_DATA"
 )
 
-t_OPEN_BRACKET = r"{"
-t_CLOSE_BRACKET = r"}"
-t_SLASH = "/"
-t_ignore = "\n"
+literals = "{}:-"
+t_ignore = '\r'
 
-t_STATEMENT_NO_SEQ_NO_TAG = ":28C:"
-t_REFERENCE_NO_TAG = ":20:"
 
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += t.value.count("\n")
+# t_STATEMENT_NO_SEQ_NO_TAG = ":28C:"
+# t_REFERENCE_NO_TAG = ":20:"
+
+def t_NEWLINE(t):
+    r"\n+"
+    t.value = "NEWLINE"
+    return t
 
 def t_NUMERIC(t):
     r"\d+"
@@ -32,71 +27,88 @@ def t_NUMERIC(t):
     return t
 
 def t_ALPHANUMERIC(t):
-    r"[\w\d]+"
+    r"[A-Z0-9]+"
+    t.value = str(t.value)
+    return t
+
+def t_FIELD_DATA(t):
+    r"(?<=:)([[0-9A-Z\s\/:,\(\) ]+)(?=\}|\n[\-:])"
     t.value = str(t.value)
     return t
 
 def t_error(t):
-    raise TypeError("Unknown text %r" % t.value)
+    raise ValueError("Cannot parse text %r" % t.value)
 
 lex.lex()
 
 def p_error(p):
-    raise ParserError("Syntax error at '%s'" % p.value)
+    raise ParserError("Syntax error at '%s (%s)'" % (p.value, p.type))
+
 
 def p_swift_message(p):
     """
-    swift_message : block
-                  | empty_block
+    swift_message : blocks
     """
-    p[0] = p[1]
+    p[0] = dict(production for production in p[1])
 
-def p_empty_block(p):
+def p_blocks0(p):
     """
-    empty_block : OPEN_BRACKET CLOSE_BRACKET
+    blocks : blocks header_block
+    """
+    p[0] = p[1] + [p[2]]
+
+def p_blocks1(p):
+    """
+    blocks : header_block
+    """
+    p[0] = [p[1]]
+
+def p_header_block(p):
+    """
+    header_block : "{" NUMERIC ":" FIELD_DATA "}"
+                 | "{" NUMERIC ":" ALPHANUMERIC "}"
+                 | "{" NUMERIC ":" fields "}"
+    """
+    p[0] = (p[2], p[4])
+
+
+def p_fields0(p):
+    """
+    fields : terminal_field
     """
     p[0] = {}
 
-def p_block(p):
+def p_fields1(p):
     """
-    block : OPEN_BRACKET fields CLOSE_BRACKET
+    fields : value_fields terminal_field
     """
-    p[0] = {k:v for (k,v) in p[2]}
+    p[0] = dict(p[1])
 
-def p_fields_list(p):
+def p_value_fields0(p):
     """
-    fields : fields single_field
+    value_fields : value_fields value_field
     """
-    p[0] = p[1] + [p[2], ]
+    p[0] = p[1] + [p[2]]
 
+def p_value_fields1(p):
+    """
+    value_fields : value_field
+    """
+    p[0] = [p[1]]
 
-def p_field(p):
+def p_value_field(p):
     """
-    fields : single_field
+    value_field : NEWLINE ":" ALPHANUMERIC ":" FIELD_DATA
+                | NEWLINE ":" ALPHANUMERIC ":" ALPHANUMERIC
+                | NEWLINE ":" NUMERIC ":" ALPHANUMERIC
     """
-    result = list()
-    result.append(p[1])
-    p[0] = result
+    p[0] = (str(p[3]), p[5])
 
-
-def p_single_field(p):
+def p_terminal_field(p):
     """
-    single_field : statement_no_sequence_no_field
-                 | reference_no_field
+    terminal_field : NEWLINE "-"
     """
-    p[0]=p[1]
-
-def p_statement_no_sequence_no_field(p):
-    """
-    statement_no_sequence_no_field : STATEMENT_NO_SEQ_NO_TAG NUMERIC SLASH NUMERIC
-    """
-    p[0] = ("Statement Number/Sequence Number", (p[2],p[4]))
-
-def p_reference_no_field(p):
-    """
-    reference_no_field : REFERENCE_NO_TAG NUMERIC
-    """
-    p[0] = ("Reference Number", p[2])
+    pass
 
 
 yacc.yacc()
@@ -109,4 +121,4 @@ def tokenize(message):
     return output
 
 def parse(message):
-    return yacc.parse(message)
+    return yacc.parse(message, debug=False)

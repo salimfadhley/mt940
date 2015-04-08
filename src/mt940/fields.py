@@ -22,14 +22,14 @@ FIELDS = {
     "61": '6!n4!n2a1!a15dN3!a16x//16x34x'
 }
 
-FIELD_DEF = "(/*)((\d+)*)?(\d)(!)?([nacxd])"
+FIELD_DEF = "(\\/*)((\d+)*)?(\d)(!)?([nacxd])"
 
 TEXT_CLASSES = {
     'n':r'\d',
-    'a':r'\s',
-    'c':r'[\d\s]',
+    'a':r'[A-Z]',
+    'c':r'[A-Z\d]',
     'd':r'[\d,]',
-    'x':r'[\d\s\w,]',
+    'x':r'[A-Z\d\s,]',
 }
 
 def get_regex_parts_from_spec(spec):
