@@ -37,13 +37,13 @@ class TestFields(unittest.TestCase):
     def test_3a_mandatory(self):
         self.assertEqual(
             get_regex_from_spec("3!a"),
-            r"(\s{3,3})"
+            r"([A-Z]{3,3})"
         )
 
     def test_4c_mandatory(self):
         self.assertEqual(
             get_regex_from_spec("4!c"),
-            r"([\d\s]{4,4})"
+            '([A-Z\\d]{4,4})'
         )
 
     def test_5d(self):
@@ -55,13 +55,13 @@ class TestFields(unittest.TestCase):
     def test_6x(self):
         self.assertEqual(
             get_regex_from_spec("6x"),
-            r"([\d\s\w,]{0,6})"
+            '([A-Z\\d\\s,]{0,6})'
         )
 
     def test_multiple_parts(self):
         self.assertEqual(
             get_regex_from_spec("4!c2n"),
-            r"([\d\s]{4,4})(\d{0,2})"
+            '([A-Z\\d]{4,4})(\\d{0,2})'
         )
 
     def test_get_field_regex(self):
