@@ -3,22 +3,32 @@ from ply import lex, yacc
 class ParserError(RuntimeError): pass
 
 tokens = (
+    "FIELD_SEPARATOR",
+    "TERMINAL_FIELD",
+    "COLON",
     "NUMERIC",
     "ALPHANUMERIC",
-    "NEWLINE",
     "FIELD_DATA"
 )
 
-literals = "{}:-"
-t_ignore = '\r'
+literals = "{}"
 
 
-# t_STATEMENT_NO_SEQ_NO_TAG = ":28C:"
-# t_REFERENCE_NO_TAG = ":20:"
+def t_FIELD_SEPARATOR(t):
+    r"\n:"
+    t.value = None
+    return t
 
-def t_NEWLINE(t):
-    r"\n+"
-    t.value = "NEWLINE"
+
+def t_TERMINAL_FIELD(t):
+    r"\n-"
+    t.value = None
+    return t
+
+
+def t_COLON(t):
+    r":"
+    t.value = None
     return t
 
 def t_NUMERIC(t):
@@ -32,7 +42,7 @@ def t_ALPHANUMERIC(t):
     return t
 
 def t_FIELD_DATA(t):
-    r"(?<=:)([[0-9A-Z\s\/:,\(\) ]+)(?=\}|\n[\-:])"
+    r"(?<=:)([[0-9A-Z\s\/:,\(\) \.]+)(?=\}|\n[\-:])"
     t.value = str(t.value)
     return t
 
@@ -65,22 +75,22 @@ def p_blocks1(p):
 
 def p_header_block(p):
     """
-    header_block : "{" NUMERIC ":" FIELD_DATA "}"
-                 | "{" NUMERIC ":" ALPHANUMERIC "}"
-                 | "{" NUMERIC ":" fields "}"
+    header_block : "{" NUMERIC COLON FIELD_DATA "}"
+                 | "{" NUMERIC COLON ALPHANUMERIC "}"
+                 | "{" NUMERIC COLON fields "}"
     """
     p[0] = (p[2], p[4])
 
 
 def p_fields0(p):
     """
-    fields : terminal_field
+    fields : TERMINAL_FIELD
     """
     p[0] = {}
 
 def p_fields1(p):
     """
-    fields : value_fields terminal_field
+    fields : value_fields TERMINAL_FIELD
     """
     p[0] = dict(p[1])
 
@@ -98,17 +108,11 @@ def p_value_fields1(p):
 
 def p_value_field(p):
     """
-    value_field : NEWLINE ":" ALPHANUMERIC ":" FIELD_DATA
-                | NEWLINE ":" ALPHANUMERIC ":" ALPHANUMERIC
-                | NEWLINE ":" NUMERIC ":" ALPHANUMERIC
+    value_field : FIELD_SEPARATOR ALPHANUMERIC COLON FIELD_DATA
+                | FIELD_SEPARATOR ALPHANUMERIC COLON ALPHANUMERIC
+                | FIELD_SEPARATOR NUMERIC COLON ALPHANUMERIC
     """
-    p[0] = (str(p[3]), p[5])
-
-def p_terminal_field(p):
-    """
-    terminal_field : NEWLINE "-"
-    """
-    pass
+    p[0] = (str(p[2]), p[4])
 
 
 yacc.yacc()
