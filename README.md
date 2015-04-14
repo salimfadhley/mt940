@@ -1,6 +1,6 @@
 # mt940
 
-[![Build Status](https://travis-ci.org/salimfadhley/mt940.svg?branch=master)](https://travis-ci.org/salimfadhley/mt940)
+[![Build Status](https://travis-ci.org/salimfadhley/mt940.svg?branch=master)](https://travis-ci.org/salimfadhley/mt940) [![Code Health](https://landscape.io/github/salimfadhley/mt940/master/landscape.svg?style=flat)](https://landscape.io/github/salimfadhley/mt940/master)
 
 An  parser for Swift MT940 documents built using the PLY parser generator.
 
