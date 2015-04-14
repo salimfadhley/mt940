@@ -57,6 +57,11 @@ class TestMT940Parser(unittest.TestCase):
         expected = {1: 'X', 2: 'Y', 4: [("A", "B:C")]}
         self.assertEqual(expected, parse(message))
 
+    def test_header_block_four_with_commas_in_data(self):
+        message = "{1:X}{2:Y}{4:\n:A:B, C\n-}"
+        expected = {1: 'X', 2: 'Y', 4: [("A", "B, C")]}
+        self.assertEqual(expected, parse(message))
+
     def test_header_block_one_and_colons_and_newlines_in_data(self):
         message = "{1:X}{2:Y}{4:\n:A:B:C\nD\n-}"
         expected = {1: 'X', 2: 'Y', 4: [("A", "B:C\nD")]}

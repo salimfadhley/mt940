@@ -13,7 +13,7 @@ tokens = (
     "ALPHANUMERIC"
 )
 
-literals = "{}/"
+literals = "{}/,"
 
 
 def t_FIELD_SEPARATOR(t):
@@ -47,7 +47,7 @@ def t_NUMERIC(t):
 
 
 def t_ALPHANUMERIC(t):
-    r"[A-Z0-9]+"
+    r"[A-Z0-9 \(\)]+"
     t.value = str(t.value)
     return t
 
@@ -155,6 +155,7 @@ def p_subfield_separator(p):
     subfield_separator : COLON
                        | NEWLINE
                        | "/"
+                       | ","
     """
     p[0] = p[1]
 
