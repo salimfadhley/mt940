@@ -1,27 +1,35 @@
 from ply import lex, yacc
 
+
 class ParserError(RuntimeError): pass
+
 
 tokens = (
     "FIELD_SEPARATOR",
+    "SUBFIELD_SEPARATOR",
     "TERMINAL_FIELD",
     "COLON",
     "NUMERIC",
-    "ALPHANUMERIC",
-    "FIELD_DATA"
+    "ALPHANUMERIC"
 )
 
 literals = "{}"
 
 
 def t_FIELD_SEPARATOR(t):
-    r"\n:"
+    r"(?m)\n:"
     t.value = None
     return t
 
 
 def t_TERMINAL_FIELD(t):
-    r"\n-"
+    r"(?m)\n-"
+    t.value = None
+    return t
+
+
+def t_SUBFIELD_SEPARATOR(t):
+    r"(?m)\n"
     t.value = None
     return t
 
@@ -31,25 +39,25 @@ def t_COLON(t):
     t.value = None
     return t
 
+
 def t_NUMERIC(t):
     r"\d+"
     t.value = int(t.value)
     return t
+
 
 def t_ALPHANUMERIC(t):
     r"[A-Z0-9]+"
     t.value = str(t.value)
     return t
 
-def t_FIELD_DATA(t):
-    r"(?<=:)([[0-9A-Z\s\/:,\(\) \.]+)(?=\}|\n[\-:])"
-    t.value = str(t.value)
-    return t
 
 def t_error(t):
     raise ValueError("Cannot parse text %r" % t.value)
 
+
 lex.lex()
+
 
 def p_error(p):
     raise ParserError("Syntax error at '%s (%s)'" % (p.value, p.type))
@@ -61,11 +69,13 @@ def p_swift_message(p):
     """
     p[0] = dict(production for production in p[1])
 
+
 def p_blocks0(p):
     """
     blocks : blocks header_block
     """
     p[0] = p[1] + [p[2]]
+
 
 def p_blocks1(p):
     """
@@ -73,10 +83,18 @@ def p_blocks1(p):
     """
     p[0] = [p[1]]
 
+
+def p_data_chunk(p):
+    """
+    data_chunk : NUMERIC
+               | ALPHANUMERIC
+    """
+    p[0] = str(p[1])
+
+
 def p_header_block(p):
     """
-    header_block : "{" NUMERIC COLON FIELD_DATA "}"
-                 | "{" NUMERIC COLON ALPHANUMERIC "}"
+    header_block : "{" NUMERIC COLON data_chunk "}"
                  | "{" NUMERIC COLON fields "}"
     """
     p[0] = (p[2], p[4])
@@ -88,6 +106,7 @@ def p_fields0(p):
     """
     p[0] = {}
 
+
 def p_fields1(p):
     """
     fields : value_fields TERMINAL_FIELD
@@ -96,26 +115,44 @@ def p_fields1(p):
 
 def p_value_fields0(p):
     """
-    value_fields : value_fields value_field
-    """
-    p[0] = p[1] + [p[2]]
-
-def p_value_fields1(p):
-    """
     value_fields : value_field
     """
     p[0] = [p[1]]
 
+
+def p_value_fields1(p):
+    """
+    value_fields : value_fields value_field
+    """
+    p[0] = p[1] + [p[2]]
+
+
 def p_value_field(p):
     """
-    value_field : FIELD_SEPARATOR ALPHANUMERIC COLON FIELD_DATA
-                | FIELD_SEPARATOR ALPHANUMERIC COLON ALPHANUMERIC
-                | FIELD_SEPARATOR NUMERIC COLON ALPHANUMERIC
+    value_field : FIELD_SEPARATOR data_chunk COLON field_data
     """
     p[0] = (str(p[2]), p[4])
 
 
+def p_field_data0(p):
+    """
+    field_data : data_chunk
+    """
+    p[0] = p[1]
+
+
+def p_field_data1(p):
+    """
+    field_data : field_data SUBFIELD_SEPARATOR data_chunk
+    """
+    p[0] = p[1] + p[2] + str(p[3])
+
+
+
+
+
 yacc.yacc()
+
 
 def tokenize(message):
     output = []
@@ -124,5 +161,6 @@ def tokenize(message):
         output.append((tok.type, tok.value))
     return output
 
+
 def parse(message):
-    return yacc.parse(message, debug=False)
+    return yacc.parse(message, debug=True)
