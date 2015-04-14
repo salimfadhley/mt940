@@ -6,7 +6,7 @@ class ParserError(RuntimeError): pass
 
 tokens = (
     "FIELD_SEPARATOR",
-    "SUBFIELD_SEPARATOR",
+    "NEWLINE",
     "TERMINAL_FIELD",
     "COLON",
     "NUMERIC",
@@ -28,14 +28,15 @@ def t_TERMINAL_FIELD(t):
     return t
 
 
-def t_SUBFIELD_SEPARATOR(t):
+def t_NEWLINE(t):
     r"(?m)\n"
+    t.value = "\n"
     return t
 
 
 def t_COLON(t):
     r":"
-    t.value = None
+    t.value = ":"
     return t
 
 
@@ -140,9 +141,16 @@ def p_field_data0(p):
     p[0] = p[1]
 
 
+def p_subfield_separator(p):
+    """
+    subfield_separator : COLON
+                       | NEWLINE
+    """
+    p[0] = p[1]
+
 def p_field_data1(p):
     """
-    field_data : field_data SUBFIELD_SEPARATOR data_chunk
+    field_data : field_data subfield_separator data_chunk
     """
     p[0] = p[1] + p[2] + p[3]
 

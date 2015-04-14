@@ -18,7 +18,7 @@ class TestMT940Parser(unittest.TestCase):
         self.assertEqual(types, [
             '{', 'NUMERIC', 'COLON', 'ALPHANUMERIC', '}',
             '{', 'NUMERIC', 'COLON', 'ALPHANUMERIC', '}',
-            '{', 'NUMERIC', 'FIELD_SEPARATOR', 'ALPHANUMERIC', 'COLON', 'ALPHANUMERIC', 'SUBFIELD_SEPARATOR',
+            '{', 'NUMERIC', 'FIELD_SEPARATOR', 'ALPHANUMERIC', 'COLON', 'ALPHANUMERIC', 'NEWLINE',
             'ALPHANUMERIC', 'TERMINAL_FIELD', '}'
         ])
 
@@ -50,6 +50,16 @@ class TestMT940Parser(unittest.TestCase):
     def test_header_block_one_and_two_and_four_newlines_in_data(self):
         message = "{1:X}{2:Y}{4:\n:A:B\nC\n-}"
         expected = {1: 'X', 2: 'Y', 4: {"A": "B\nC"}}
+        self.assertEqual(expected, parse(message))
+
+    def test_header_block_one_and_colons_in_data(self):
+        message = "{1:X}{2:Y}{4:\n:A:B:C\n-}"
+        expected = {1: 'X', 2: 'Y', 4: {"A": "B:C"}}
+        self.assertEqual(expected, parse(message))
+
+    def test_header_block_one_and_colons_and_newlines_in_data(self):
+        message = "{1:X}{2:Y}{4:\n:A:B:C\nD\n-}"
+        expected = {1: 'X', 2: 'Y', 4: {"A": "B:C\nD"}}
         self.assertEqual(expected, parse(message))
 
 
