@@ -30,7 +30,6 @@ def t_TERMINAL_FIELD(t):
 
 def t_SUBFIELD_SEPARATOR(t):
     r"(?m)\n"
-    t.value = None
     return t
 
 
@@ -145,7 +144,8 @@ def p_field_data1(p):
     """
     field_data : field_data SUBFIELD_SEPARATOR data_chunk
     """
-    p[0] = p[1] + p[2] + str(p[3])
+    p[0] = p[1] + p[2] + p[3]
+
 
 
 

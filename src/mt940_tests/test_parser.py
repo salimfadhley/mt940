@@ -47,10 +47,10 @@ class TestMT940Parser(unittest.TestCase):
         expected = {1: 'F01HBOSXXXXAXXX9999999999', 2: 'I940HBOSXXXXXXXXN', 4: {"FOO": "BLAH", "FOD": "FIB"}}
         self.assertEqual(expected, parse(message))
 
-        # def test_header_block_one_and_two_and_four_newlines_in_data(self):
-        #     message = "{1:X}{2:Y}{4:\n:A:B\nC\n-}"
-        #     expected = {1: 'X', 2: 'Y', 4: {"A": "B\nC"}}
-    #     self.assertEqual(expected, parse(message))
+    def test_header_block_one_and_two_and_four_newlines_in_data(self):
+        message = "{1:X}{2:Y}{4:\n:A:B\nC\n-}"
+        expected = {1: 'X', 2: 'Y', 4: {"A": "B\nC"}}
+        self.assertEqual(expected, parse(message))
 
 
 
