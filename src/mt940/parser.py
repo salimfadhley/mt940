@@ -13,7 +13,7 @@ tokens = (
     "ALPHANUMERIC"
 )
 
-literals = "{}"
+literals = "{}/"
 
 
 def t_FIELD_SEPARATOR(t):
@@ -84,7 +84,7 @@ def p_blocks1(p):
     p[0] = [p[1]]
 
 
-def p_data_chunk(p):
+def p_data_chunk0(p):
     """
     data_chunk : NUMERIC
                | ALPHANUMERIC
@@ -92,10 +92,18 @@ def p_data_chunk(p):
     p[0] = str(p[1])
 
 
+def p_data_chunk1(p):
+    """
+    data_chunk : data_chunk data_chunk
+    """
+    p[0] = p[1] + p[2]
+
+
 def p_header_block(p):
     """
     header_block : "{" NUMERIC COLON data_chunk "}"
                  | "{" NUMERIC COLON fields "}"
+                 | "{" NUMERIC COLON swift_message "}"
     """
     p[0] = (p[2], p[4])
 
@@ -104,14 +112,15 @@ def p_fields0(p):
     """
     fields : TERMINAL_FIELD
     """
-    p[0] = {}
+    p[0] = []
 
 
 def p_fields1(p):
     """
     fields : value_fields TERMINAL_FIELD
     """
-    p[0] = dict(p[1])
+    p[0] = p[1]
+
 
 def p_value_fields0(p):
     """
@@ -145,18 +154,16 @@ def p_subfield_separator(p):
     """
     subfield_separator : COLON
                        | NEWLINE
+                       | "/"
     """
     p[0] = p[1]
+
 
 def p_field_data1(p):
     """
     field_data : field_data subfield_separator data_chunk
     """
     p[0] = p[1] + p[2] + p[3]
-
-
-
-
 
 
 yacc.yacc()
@@ -170,5 +177,5 @@ def tokenize(message):
     return output
 
 
-def parse(message):
-    return yacc.parse(message, debug=True)
+def parse(message, debug=False):
+    return yacc.parse(message, debug=debug)
