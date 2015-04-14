@@ -101,9 +101,9 @@ def p_data_chunk1(p):
 
 def p_header_block(p):
     """
-    header_block : "{" NUMERIC COLON data_chunk "}"
-                 | "{" NUMERIC COLON fields "}"
-                 | "{" NUMERIC COLON swift_message "}"
+    header_block : "{" data_chunk COLON data_chunk "}"
+                 | "{" data_chunk COLON fields "}"
+                 | "{" data_chunk COLON swift_message "}"
     """
     p[0] = (p[2], p[4])
 
