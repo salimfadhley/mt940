@@ -1,20 +1,20 @@
 """
 Status
 
-M – mandatory,
-O – optionalFormat
+M - mandatory,
+O - optionalFormat
 
-n – only digits
-a – only letters
-c – alphanumerical
-x – any alphanumerical characters including commas, spaces, etc.
-d – amount including a comma as a decimal separator
+n - only digits
+a - only letters
+c - alphanumerical
+x - any alphanumerical characters including commas, spaces, etc.
+d - amount including a comma as a decimal separator
 
 Example:
 
-2n – up to 2 digits
-3!a – always 3 letters
-15*65x – up to 15 lines, 65 characters each
+2n - up to 2 digits
+3!a - always 3 letters
+15*65x - up to 15 lines, 65 characters each
 """
 import re
 
