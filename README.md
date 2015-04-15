@@ -1,10 +1,8 @@
-# mt940
+# mt940parser
+
+A  parser for Swift MT940 documents built using the [PLY](http://www.dabeaz.com/ply/) parser generator, tested on Python 3
 
 ## About this project
-
-[![Build Status](https://travis-ci.org/salimfadhley/mt940.svg?branch=master)](https://travis-ci.org/salimfadhley/mt940) [![Code Health](https://landscape.io/github/salimfadhley/mt940/master/landscape.svg?style=flat)](https://landscape.io/github/salimfadhley/mt940/master)
-
-An  parser for Swift MT940 documents built using the PLY parser generator, tested on Python 3
 
 This package is intended to help extract meaningful information from MT940 documents, a format commonly used by banks to
 exchange financial information.
@@ -13,6 +11,11 @@ MT940 can be parsed as a context-free grammar. This project attempts to describe
 which is understood by [PLY](http://www.dabeaz.com/ply/), a widely used Parser generator written in pure Python.
 
 ## Project Status
+
+[![Build Status](https://travis-ci.org/salimfadhley/mt940.svg?branch=master)](https://travis-ci.org/salimfadhley/mt940)
+[![Code Health](https://landscape.io/github/salimfadhley/mt940/master/landscape.svg?style=flat)](https://landscape.io/github/salimfadhley/mt940/master)
+[![Wheel Status](https://pypip.in/wheel/mt940parser/badge.svg)](https://pypi.python.org/pypi/mt940parser/)
+[![Requirements Status](https://requires.io/github/salimfadhley/mt940/requirements.svg?branch=master)](https://requires.io/github/salimfadhley/mt940/requirements/?branch=master)
 
 This project is not under active development - it was originally written as a technical demo of how financial data can be
 parsed using the PLY tool. You have my permission to use this code in your commercial project (subject to license), and I
