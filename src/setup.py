@@ -2,13 +2,14 @@
 from setuptools import setup
 import os
 
-PROJECT_ROOT, _ = os.path.split(__file__)
-REVISION = '0.0.1'
+SRC_DIR, _ = os.path.split(__file__)
+PROJECT_ROOT, _ = os.path.split(SRC_DIR)
+REVISION = '0.0.2'
 PROJECT_NAME = 'mt940parser'
 PROJECT_AUTHORS = "Salim Fadhley"
 PROJECT_EMAILS = 'salimfadhley@gmail.com'
-PROJECT_URL = "https://bitbucket.org/salimfadhley/toytable"
-SHORT_DESCRIPTION = 'MT940 / MT942 message parser implemented in PLY.'
+PROJECT_URL = "https://github.com/salimfadhley/mt940"
+SHORT_DESCRIPTION = 'MT940 / MT942 message parser implemented as a context-free grammar in PLY.'
 
 try:
     DESCRIPTION = open(os.path.join(PROJECT_ROOT, "readme.md")).read()

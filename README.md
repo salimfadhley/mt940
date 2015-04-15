@@ -9,6 +9,24 @@ An  parser for Swift MT940 documents built using the PLY parser generator, teste
 This package is intended to help extract meaningful information from MT940 documents, a format commonly used by banks to
 exchange financial information.
 
+MT940 can be parsed as a context-free grammar. This project attempts to describe the syntax of MT940 in [Backus–Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
+which is understood by [PLY](http://www.dabeaz.com/ply/), a widely used Parser generator written in pure Python.
+
+## Project Status
+
+This project is not under active development - it was originally written as a technical demo of how financial data can be
+parsed using the PLY tool. You have my permission to use this code in your commercial project (subject to license), and I
+am happy to answer technical questions if they are raised as issues on the GitHub project.
+
+## Installation
+
+The project is hosted on the Python Package Index. You can install it into your current Python environment using the Pip
+installation tool:
+
+```bash
+pip install mt940parser
+```
+
 ## Demo
 
 ```python
@@ -161,3 +179,25 @@ For more information please refer to:
    Customer Statement Message and
    SWIFT MT 942 Interim
    Transaction Report](http://martin.hinner.info/bankconvert/swift_mt940_942.pdf)
+   
+## Software License
+
+Copyright (c) 2015 Salim Fadhley
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
