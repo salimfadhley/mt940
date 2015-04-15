@@ -4,7 +4,7 @@ import os
 
 PROJECT_ROOT, _ = os.path.split(__file__)
 REVISION = '0.0.1'
-PROJECT_NAME = 'mt940'
+PROJECT_NAME = 'mt940parser'
 PROJECT_AUTHORS = "Salim Fadhley"
 PROJECT_EMAILS = 'salimfadhley@gmail.com'
 PROJECT_URL = "https://bitbucket.org/salimfadhley/toytable"
